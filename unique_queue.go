@@ -74,3 +74,19 @@ func (u *UniqueQueue) Length(q string) (resp int, err error) {
 	resp, err = redis.Int(rc.Do("LLEN", q))
 	return resp, err
 }
+
+func (u *UniqueQueue) Clear(q string) (resp int, err error) {
+	rc := u.pool.Get()
+	defer rc.Close()
+
+	resp, err = redis.Int(rc.Do("DEL", q))
+	if err != nil{
+		return resp, err
+	}
+	resp, err = redis.Int(rc.Do("DEL", u.getQueueSet(q)))
+	return resp, err
+}
+
+func (u *UniqueQueue) getQueueSet(q string) (string) {
+	return q + "_set"
+}
