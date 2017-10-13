@@ -67,3 +67,10 @@ func (u *UniqueQueue) UniquePop(q string) (resp string, err error) {
 	return resp, err
 }
 
+func (u *UniqueQueue) Length(q string) (resp int, err error) {
+	rc := u.pool.Get()
+	defer rc.Close()
+
+	resp, err = redis.Int(rc.Do("LLEN", q))
+	return resp, err
+}

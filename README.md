@@ -3,6 +3,10 @@
 使用redis lua script 操作list + set数据结构, 构建redis的去重队列, 这样既能保证FIFO，又能保证去重.
 
 
+`to do:`
+* 加入批量操作
+* 加入优先级队列
+
 `example:`
 
 ```
@@ -27,11 +31,21 @@ func main() {
 	redis_client := unique_queue.NewRedisPool(redis_client_config)
 
 
+	qname := "xiaorui.cc"
 	u := unique_queue.NewUniqueQueue(redis_client)
 	for i := 0; i < 100; i++ {
-		u.UniquePush("qqq", "body...")
-		u.UniquePop("qqq")
+		u.UniquePush(qname, "body...")
 	}
+
+	fmt.Println(u.Length(qname))
+
+	for i := 0; i < 100; i++ {
+		u.UniquePop(qname)
+	}
+
+	fmt.Println(u.Length(qname))
+
+
 	fmt.Println("end")
 }
 ```
