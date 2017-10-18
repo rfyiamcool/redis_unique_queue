@@ -20,28 +20,6 @@ else
 end
 
 `
-	SCRIPT_PRIORITY_POP_DEBUG = `
-local q_set = KEYS[1] .. "_set"
-local loop_num = tonumber(ARGV[1])
-local i = 1
-
-while (i <= loop_num) do
-	local q = KEYS[1] .. "_" ..i
-	local v = redis.call("LPOP", q)
-	redis.call("SET", "aaaa", type(v))
-	redis.call("SET", "bbbb", "b")
-	if type(v) == "boolean"
-	then
-		local x = KEYS[1] .. "_" ..i
-	else
-		redis.call("SET", "ccc", "c")
-		redis.call("SREM", q_set, v)
-		return v
-	end
-	i = i + 1
-end
-`
-
 	SCRIPT_PRIORITY_POP = `
 local q_set = KEYS[1] .. "_set"
 local loop_num = tonumber(ARGV[1])
@@ -71,6 +49,9 @@ type PriorityQueue struct{
 }
 
 func NewPriorityQueue(priority int, unique bool, r *redis.Pool) *PriorityQueue {
+	if priority < 0 {
+		priority = DEFAULT_PRIORITY
+	}
 	return &PriorityQueue{
 		pool: r,
 		Priority: priority,
