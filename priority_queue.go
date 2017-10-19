@@ -61,12 +61,12 @@ func NewPriorityQueue(priority int, unique bool, r *redis.Pool) *PriorityQueue {
 
 // return 1, push success
 // return 0, not push, set filter
-func (u *PriorityQueue) Push(q string, body string, pri int) (int, error) {
+func (u *PriorityQueue) Push(q string, body string, priority int) (int, error) {
 	rc := u.pool.Get()
 	defer rc.Close()
 
 	script := redis.NewScript(1, SCRIPT_PRIORITY_PUSH)
-	resp, err := redis.Int(script.Do(rc, q, body, pri))
+	resp, err := redis.Int(script.Do(rc, q, body, priority))
 	if err == redis.ErrNil {
 		err = nil
 	}
