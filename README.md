@@ -1,6 +1,16 @@
 # redis_unique_queue
 
-使用redis lua script 操作list + set数据结构, 构建redis的去重队列, 这样既能保证FIFO，又能保证去重.
+## 功能:
+
+使用redis lua script 封装的去重及优先级队列方法, 达到了组合命令的原子性和节省来往的io请求的目的.
+
+`去重队列:`
+
+不仅能保证FIFO, 而且去重.
+
+`优先级去重队列:`
+
+按照优先级获取任务, 并且去重.
 
 
 ## Usage:
